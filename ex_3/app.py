@@ -14,14 +14,14 @@ def init_db():
 
 @app.route('/search')
 def search():
-    query = request.args.get('query')  # Récupère l'entrée utilisateur
+    query = request.args.get('query')
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
-    # Requête SQL vulnérable à l'injection
-    cursor.execute(f"SELECT * FROM items WHERE name = '{query}'")
+    sql = f"SELECT * FROM items WHERE name = '{query}'"
+    cursor.execute(sql)
     results = cursor.fetchall()
     conn.close()
-    return str(results)  # Retourne les résultats de la requête
+    return str(results)
 
 if __name__ == '__main__':
     init_db()  # Initialiser la base de données
