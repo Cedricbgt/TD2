@@ -1,8 +1,9 @@
 from flask import Flask, request
+import sqlite3
 
 app = Flask(__name__)
 
-@app.route('/index')
+@app.route('/')
 def index():
     return '''
         <h1>Recherche</h1>
@@ -15,8 +16,13 @@ def index():
 @app.route('/search')
 def search():
     query = request.args.get('query', '')  # Récupère l'entrée utilisateur
-    # Affichage non sécurisé de l'entrée utilisateur (vulnérable à XSS)
-    return f"<h1>Résultats pour : {query}</h1>"
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    # Requête SQL vulnérable à l'injection
+    cursor.execute(f"SELECT * FROM items WHERE name = '{query}'")
+    results = cursor.fetchall()
+    conn.close()
+    return f"<h1>Résultats pour : {query}</h1><p>{results}</p>"
 
 if __name__ == '__main__':
     app.run(debug=True)
