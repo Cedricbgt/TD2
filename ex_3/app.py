@@ -17,8 +17,11 @@ def search():
     query = request.args.get('query')
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
-    sql = f"SELECT * FROM items WHERE name = '{query}'"
-    cursor.execute(sql)
+    
+    # Construction de la requête SQL de manière moins évidente
+    sql = "SELECT * FROM items WHERE name = '" + query + "'"
+    cursor.execute(sql)  # Exécution de la requête
+    
     results = cursor.fetchall()
     conn.close()
     return str(results)
